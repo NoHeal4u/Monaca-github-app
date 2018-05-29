@@ -17,7 +17,7 @@
 		props:{
 			title : {
 				type: String,
-				defaults : 'GitHub App'
+				default : 'GitHub App'
 			}
 		}
 
