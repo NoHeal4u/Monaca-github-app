@@ -12,6 +12,10 @@
         <div class="right">{{repo.name}}</div>
       </v-ons-list-item>
       </div>
+      <div v-else>
+      <EmptyState v-if="query===''" :type = "query"/>
+      <Error v-if="doWhileAxiosRequest === false && query!=''" />
+      </div>
       <v-ons-progress-circular v-if="doWhileAxiosRequest" indeterminate/></v-ons-progress-circular>
     </v-ons-list>
     </v-ons-page>
@@ -19,6 +23,8 @@
 <script>
 import AppToolbar from './components/AppToolbar.vue'
 import AppSearch from './components/AppSearch.vue'
+import EmptyState from './components/EmptyState.vue'
+import Error from './components/Error.vue'
 import { gitHub } from './services/GitHub.js'
 import debounce from 'lodash/debounce'
 
@@ -27,7 +33,9 @@ import debounce from 'lodash/debounce'
     
     components: {
       AppToolbar,
-      AppSearch
+      AppSearch,
+      EmptyState,
+      Error
     },
 
     data(){
