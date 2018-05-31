@@ -9,6 +9,11 @@ export default class GitHub {
     return axios.get(`${username}/repos`)
   }
 
+  getUser (username){
+    return axios.get(`${username}`)
+  }
+
+
  
 }
 
