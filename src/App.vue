@@ -3,15 +3,16 @@
      <AppToolbar/>
      <AppSearch :query.sync="query" @update:query="callGetRepos"/>
       <v-ons-list>
-      <div v-if="getUserTrigger">
-      <v-ons-list-header>Repositories of {{ user.name }}</v-ons-list-header>
+      <div v-if="getUserTrigger && repos.length !== 0 " >
+      <v-ons-list-header>Repositories of {{ repos[0].owner.login }}</v-ons-list-header>
       <v-ons-list-item v-for="repo in repos" >
         <div class="left">
-          <img :src="user.avatar_url" height="25" width="25">
+          <img :src="repo.owner.avatar_url" height="25" width="25">
         </div>
         <div class="right">{{repo.name}}</div>
       </v-ons-list-item>
       </div>
+      <v-ons-progress-circular v-else indeterminate/></v-ons-progress-circular>
     </v-ons-list>
     </v-ons-page>
 </template>
@@ -19,7 +20,7 @@
 import AppToolbar from './components/AppToolbar.vue'
 import AppSearch from './components/AppSearch.vue'
 import { gitHub } from './services/GitHub.js'
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 
   export default{
     name: 'git-app',
@@ -34,12 +35,13 @@ import _ from 'lodash'
         query: '',
         repos: '',
         user: '',
-        getUserTrigger: false
+        getUserTrigger: false,
+      
       }
     },
 
     created() {
-      this.callGetRepos = _.debounce(this.getRepos, 500)
+      this.callGetRepos = debounce(this.getRepos, 500)
     },
 
     watch: {
@@ -54,7 +56,12 @@ import _ from 'lodash'
           this.repos = data
           this.getUserTrigger = true
           console.log(this.repos)
-          this.user = this.getUser()
+          // this.user = this.getUser()
+          
+        }).catch(error=>{
+          console.log('OVDE JE ERROR')
+          console.log(error.response)
+          this.getUserTrigger = false
         })
        
       },
