@@ -12,7 +12,7 @@
         <div class="right">{{repo.name}}</div>
       </v-ons-list-item>
       </div>
-      <v-ons-progress-circular v-else indeterminate/></v-ons-progress-circular>
+      <v-ons-progress-circular v-if="doWhileAxiosRequest" indeterminate/></v-ons-progress-circular>
     </v-ons-list>
     </v-ons-page>
 </template>
@@ -36,6 +36,7 @@ import debounce from 'lodash/debounce'
         repos: '',
         user: '',
         getUserTrigger: false,
+        doWhileAxiosRequest:false
       
       }
     },
@@ -53,6 +54,7 @@ import debounce from 'lodash/debounce'
     methods: {
       getRepos(){
         gitHub.getRepos(this.query).then(({ data })=>{
+          this.doWhileAxiosRequest = true
           this.repos = data
           this.getUserTrigger = true
           console.log(this.repos)
@@ -62,6 +64,8 @@ import debounce from 'lodash/debounce'
           console.log('OVDE JE ERROR')
           console.log(error.response)
           this.getUserTrigger = false
+        }).finally(()=>{
+          this.doWhileAxiosRequest = false
         })
        
       },
